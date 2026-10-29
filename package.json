@@ -1,0 +1,10 @@
+{
+  "name": "si-banyu",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": { "build": "node build.mjs", "test": "node --test idle-session.test.mjs database.test.mjs" },
+  "dependencies": { "@supabase/supabase-js": "2.118.0" },
+  "devDependencies": { "esbuild": "0.28.2", "@electric-sql/pglite": "0.5.13" }
+}
