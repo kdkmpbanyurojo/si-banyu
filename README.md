@@ -1,15 +1,3 @@
-# Paket pelengkap GitHub SI-BANYU — 16 file
-
-ZIP ini melengkapi repository `kdkmpbanyurojo/si-banyu` yang pada pemeriksaan 29 Oktober 2026 baru memiliki `idle-session.js` dan `idle-session.test.mjs`. Dua file tersebut sudah memuat perbaikan login.
-
-Ekstrak ZIP ini lalu unggah seluruh 16 file ke akar repository yang sama. Setelah commit, jumlah file di akar menjadi 18. Paket pelengkap ini menggunakan dua file sesi yang sudah ada; untuk membuat repository lain dari awal, gunakan paket lengkap `SI-BANYU-VERCEL.zip`.
-
-Pastikan proyek Vercel terhubung ke repository `kdkmpbanyurojo/si-banyu`, branch `main`, melalui Settings > Git. Tunggu deployment dari commit terbaru berstatus Ready. Redeploy dari sumber lama tidak mengambil perbaikan di repository yang berbeda.
-
-Setup SQL, akun admin, dan environment variable yang sudah benar tetap dapat digunakan. Panduan di bawah berlaku untuk proyek lengkap setelah 16 file ini digabungkan dengan dua file sesi yang sudah ada.
-
----
-
 # SI-BANYU — paket Vercel + Supabase
 
 Paket ini memuat website KDKMP Banyurojo, 169 foto PNG transparan, katalog, catatan belanja dengan unduhan gambar, profil, bagan organisasi, berita, dan admin. Semua berkas sumber berada langsung di akar ZIP, tanpa folder pembungkus. Ekstrak seluruh isi ZIP ke satu lokasi sebelum diunggah ke GitHub atau dijalankan lewat Vercel CLI.
@@ -17,7 +5,7 @@ Paket ini memuat website KDKMP Banyurojo, 169 foto PNG transparan, katalog, cata
 ## Penyimpanan yang dipakai
 
 - Vercel: menjalankan dan menyajikan website. 169 foto awal sudah menjadi aset website; tidak perlu diunggah ulang ke Supabase.
-- Supabase Database: menyimpan produk, harga, stok, profil, struktur, galeri, berita/draf, dan riwayat perubahan stok. Penulisan memakai pemeriksaan versi agar perubahan admin lain tidak tertimpa.
+- Supabase Database: menyimpan produk, harga, stok, profil, struktur, galeri, berita/draf, dan riwayat perubahan admin. Penulisan memakai pemeriksaan versi agar perubahan admin lain tidak tertimpa.
 - Supabase Auth: login email/kata sandi milik pengelola yang masuk daftar admin.
 - Supabase Storage: unggahan foto baru melalui admin. Bucket `si-banyu-media` untuk foto situs publik; jangan gunakan untuk dokumen pribadi, KK, atau lampiran rahasia. Draf teks dan data nonaktif hanya diberikan kepada sesi admin yang sah.
 - Catatan belanja, jumlah pilihan, pengingat, dan anggaran tetap berada di browser pembeli. Tidak dikirim menjadi pesanan, pembayaran, atau pengurangan stok.
@@ -78,13 +66,42 @@ npm run build
 
 Gunakan server HTTP statis untuk membuka isi hasil build. Sumber modular ini bukan HTML mandiri yang dibuka dengan klik ganda melalui `file://`.
 
-Tes memakai jam simulasi untuk batas10 menit dan PostgreSQL lokal berbasis WASM untuk peran, sanitasi konten publik, hak unggah, lease, pencabutan sesi, serta konflik penyimpanan. Tes tidak menggunakan akun Supabase sungguhan. Sambungan proyek Supabase/Vercel produksi tetap perlu diperiksa setelah konfigurasi diisi.
+Tes memakai jam simulasi untuk batas10 menit dan PostgreSQL lokal berbasis WASM untuk peran, sanitasi konten publik, hak unggah, lease, pencabutan sesi, serta konflik penyimpanan. Tes data juga memeriksa pemilihan barang untuk gambar dan pencatatan perubahan admin. Tes tidak menggunakan akun Supabase sungguhan. Sambungan proyek Supabase/Vercel produksi tetap perlu diperiksa setelah konfigurasi diisi.
 
-## 5. Kondisi sebelum konfigurasi diisi
+## 5. Revisi keranjang, profil, dan riwayat admin
+
+### Memperbarui situs yang sudah terpasang
+
+Unggah seluruh isi paket ini ke akar repositori GitHub yang terhubung ke Vercel, lalu commit. Jika memakai ZIP revisi saja, unggah semua berkas revisinya dalam satu commit; `app.js` membutuhkan modul baru `site-data.js`. Tunggu deployment dari commit baru berstatus Ready, lalu muat ulang website. Environment variables Vercel tetap memakai nilai proyek yang sudah ada.
+
+Revisi ini tidak memerlukan migrasi SQL, pengisian seed ulang, atau perubahan RLS Supabase. Data dan riwayat tersimpan tetap digunakan.
+
+### Barang yang masuk gambar catatan belanja
+
+- Centang barang yang ingin dimasukkan ke gambar. Produk yang tidak dicentang tetap berada di keranjang dan tidak muncul dalam PNG.
+- Jumlah jenis, jumlah barang, estimasi harga, dan selisih anggaran di PNG dihitung hanya dari barang yang dicentang.
+- Mengubah jumlah barang tidak membatalkan centangnya. Gunakan **Pilih semua** atau **Batal pilih semua** bila diperlukan.
+- Jika tidak ada yang dicentang, tombol **Simpan gambar** tidak aktif. Fitur salin dan cetak tetap memuat seluruh daftar.
+
+### Menghilangkan tulisan draf pada profil
+
+Masuk sebagai admin, buka **Profil & visi misi**, hilangkan centang **Tandai visi, misi, dan nilai sebagai draf ilustratif**, lalu klik **Simpan profil**. Pengaturan ini menghilangkan label draf serta kalimat menunggu konfirmasi pengurus. Tidak ada langkah persetujuan tambahan di aplikasi.
+
+### Riwayat perubahan admin
+
+- Riwayat stok yang sudah ada tetap tersedia pada **Inventaris & stok**.
+- Menu **Riwayat perubahan** menggabungkan catatan stok lama dan aktivitas baru, termasuk tambah produk tanpa stok awal, edit harga/nama/gambar, hapus produk, dan perubahan konten atau profil.
+- Catatan baru mencantumkan waktu, akun admin, dan rincian perubahan. Perubahan stok yang sudah memiliki catatan tidak diduplikasi. Tersedia hingga 1.000 catatan terbaru, ditampilkan bertahap 50 catatan.
+- Aktivitas selain stok mulai tercatat setelah revisi terpasang. Aplikasi tidak dapat memulihkan aktivitas lama yang sebelumnya belum dicatat. Catatan stok lama mungkin belum memiliki identitas admin.
+- Riwayat merupakan catatan aplikasi di data konten admin, bukan log audit server yang kebal perubahan. Simpan backup JSON secara berkala.
+
+Validasi revisi: 21 tes otomatis lulus dan build berhasil. Pratinjau PNG serta alur tambah produk, edit harga/stok, dan perubahan profil diperiksa di browser dengan data simulasi lokal. Pengujian ini tidak mengubah data Supabase produksi.
+
+## 6. Kondisi sebelum konfigurasi diisi
 
 Build tetap berhasil dan katalog awal dapat ditampilkan. Login admin dinonaktifkan sampai Project URL dan publishable key diisi. Paket tidak menyediakan akun/password demo yang membuka pengelolaan produksi.
 
-## 6. Catatan konten
+## 7. Catatan konten
 
 - Video profil sudah berada setelah hero Beranda; URL video resmi masih perlu diisi melalui admin.
 - Foto Tiga Sapi490g vs daftar290g dan Tora Susu31g vs daftar30g diberi catatan konfirmasi ukuran. Harga dan stok mengikuti data yang diberikan, tidak dibuat-buat.

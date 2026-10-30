@@ -1,0 +1,32 @@
+REVISI SI-BANYU — KERANJANG, PROFIL, DAN RIWAYAT ADMIN
+
+CARA MEMASANG PADA WEBSITE YANG SUDAH ADA
+1. Ekstrak ZIP ini. Di dalamnya ada 7 file, langsung tanpa folder pembungkus.
+2. Buka repositori GitHub kdkmpbanyurojo/si-banyu, cabang main, halaman utama Code.
+3. Pilih Add file > Upload files. Seret seluruh 7 file hasil ekstrak ke halaman unggahan.
+4. Pastikan app.js DAN site-data.js sama-sama terunggah. Unggah semuanya dalam satu commit agar modul baru tersedia saat build.
+5. Klik Commit changes. Jika diminta, pilih commit langsung ke main.
+6. Buka Vercel > proyek SI-BANYU > Deployments. Tunggu deployment dari commit baru berstatus Ready.
+7. Buka website lalu muat ulang halaman. Pengaturan Supabase/Vercel yang sudah ada tetap digunakan.
+
+TIDAK PERLU menjalankan SQL, mengisi seed ulang, membuat tabel baru, atau mengubah RLS.
+Paket ini belum diunggah ke GitHub dan belum dipasang ke website produksi oleh pembuat paket.
+
+PERUBAHAN
+- Gambar catatan belanja hanya memuat barang yang dicentang, termasuk perhitungan totalnya. Barang yang tidak dicentang tetap tersimpan di keranjang.
+- Ada tombol Pilih semua / Batal pilih semua. Tanpa barang dicentang, tombol Simpan gambar tidak aktif.
+- Untuk menghilangkan label Draf ilustratif dan kalimat menunggu konfirmasi: Admin > Profil & visi misi > hapus centang “Tandai visi, misi, dan nilai sebagai draf ilustratif” > Simpan profil.
+- Riwayat stok yang sudah ada tetap tersedia. Menu Admin > Riwayat perubahan menampilkan catatan stok serta tambah/edit/hapus produk, perubahan harga, profil, dan konten lainnya dengan waktu dan akun admin.
+- Aktivitas selain stok mulai dicatat setelah pembaruan terpasang; aktivitas lama yang belum pernah dicatat tidak dapat dimunculkan kembali.
+
+VALIDASI
+21 tes otomatis lulus dan build berhasil. Pratinjau gambar serta perubahan produk/harga/stok/profil diperiksa dengan data simulasi lokal, tanpa mengubah Supabase produksi.
+
+BERKAS REVISI
+app.js
+styles.css
+package.json
+site-data.js
+site-data.test.mjs
+README.md
+PETUNJUK-REVISI.txt
